@@ -25,8 +25,8 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done. Edit the checkbox in the 
 | 1 | BB-01 | 🔴 | Text fields lose focus after every keystroke | S | [x] quick fix 2026-11-12 |
 | 2 | BB-02 | 🔴 | App source code is missing (only a compiled bundle exists) | M–L | [ ] |
 | 3 | BB-03 | 🔴 | Branded as a "WhatsApp Clone" | S | [ ] |
-| 4 | BB-05 | 🔴 | False "end-to-end encrypted" claim | S | [ ] |
-| 5 | BB-06 | 🔴 | Fake payments use real provider names with no DEMO label | S | [ ] |
+| 4 | BB-05 | 🔴 | False "end-to-end encrypted" claim | S | [x] 2026-11-12 |
+| 5 | BB-06 | 🔴 | Fake payments use real provider names with no DEMO label | S | [x] 2026-11-12 |
 | 6 | BB-04 | 🟠 | In-app Dark theme toggle does nothing | S | [ ] |
 | 7 | BB-07 | 🟠 | No persistence; log out does not clear state | M | [ ] |
 | 8 | BB-10 | 🟠 | Public dashboard shows made-up statistics | S | [ ] |
@@ -108,6 +108,8 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 
 ### BB-05 — False "end-to-end encrypted" claim · 🔴 · S
 
+> ✅ **Fixed 2026-11-12.** Splash: "Loading BBchat demo…". Header badge: "Demo mode • on this device only". Chat banner: "🔒 Demo mode — messages stay on this device and are not sent or encrypted". Checked in the browser; no "end-to-end" or "BBchat Server" text is left in `index.html`.
+
 **Where:** chat pane banner: "🔒 Messages are end-to-end encrypted on BBchat • BENBAX watermark active". Also the splash text "Connecting to BBchat Server…" and the app header badge "Connected to BBchat Server".
 
 **Impact:** nothing is encrypted, and nothing even leaves the browser. A false security claim is a consumer-protection and trust problem.
@@ -119,6 +121,14 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 ---
 
 ### BB-06 — Fake payments use real provider names with no DEMO label · 🔴 · S
+
+> ✅ **Fixed 2026-11-12.**
+> - **Pay sheet:** title "Send payment — DEMO", a yellow "DEMO ONLY — no money is moved. Never enter your real PIN." banner, the PIN label "DEMO PIN: 1234 (never your real PIN)", and the button "Demo pay GH₵ …".
+> - **Success screen:** "Demo payment — no money moved" and "Share demo receipt in chat".
+> - **Receipt bubble:** "DEMO • GH₵ 120 (not real)" with "… • demo receipt, no money moved". The chat message text reads "DEMO payment (no money moved): …".
+> - **Seed data:** the "MTN MoMo" chat is now "Wallet Alerts (demo)", the "Binance Ghana" chat is "Crypto Desk (demo)", the "Binance Ghana" channel is "Crypto Basics", and the welcome chips "MTN MoMo" / "Binance Pay" became "Payments (demo)".
+> - Checked end to end in the browser: open the sheet → PIN 1234 → share the receipt. No console errors.
+> - **Still open:** the payment-method buttons still show the provider names (MTN MoMo, Vodafone Cash, AirtelTigo, Binance Pay), now inside a sheet labelled DEMO. Remove them if the business decision in `BB-03` says so.
 
 **Where:** Pay plugin (MTN MoMo, Vodafone Cash, AirtelTigo, Binance Pay), a PIN hint "demo 1234", a "Payment sent ✓" screen and a shareable receipt bubble "Payment sent: GH₵ … via MTN MoMo". The seed chats "MTN MoMo" and "Binance Ghana" show "You received GH₵ 250.00".
 

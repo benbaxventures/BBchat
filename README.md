@@ -3,7 +3,7 @@
 BBchat is a chat app demo branded for BENBAX (Katamanso / Apolonia / Tema, Ghana). It has a phone + OTP sign-in flow, a chat list with conversations, status, calls, channels, communities, settings and a "plugins" panel (payments, polls, games, translate, scheduler and more).
 
 > ⚠️ **Status: front-end prototype, not production-ready.**
-> There is **no backend**. Nothing is sent, stored, encrypted or paid. Every message, reply, call and payment is simulated in the browser and lost on reload. (The typing bug `BB-01` was fixed on 2026-11-12.)
+> There is **no backend**. Nothing is sent, stored, encrypted or paid. Every message, reply, call and payment is simulated in the browser and lost on reload. (Fixed on 2026-11-12: the typing bug `BB-01`, the false server/encryption claims `BB-05`, and the unlabelled fake payments `BB-06`.)
 > Read [ISSUES.md](ISSUES.md) before deploying.
 
 ---
@@ -81,12 +81,12 @@ splash (auto, 1.9 s)
 ### Messaging logic
 
 * Sending a message appends it to the open chat, shows a "typing…" indicator, then after **1.4 s** adds a random canned reply from a list of 5.
-* Seed data: 12 chats (BENBAX Family, Ventures Group, Ama Mensah, MTN MoMo, Binance Ghana, Mum, Dad, …), each with 1–3 hard-coded messages.
+* Seed data: 12 chats (BENBAX Family, Ventures Group, Ama Mensah, Wallet Alerts (demo), Crypto Desk (demo), Mum, Dad, …), each with 1–3 hard-coded messages.
 * Polls, payments, stickers, locations and so on are posted as special message "kinds" inside the same in-memory list.
 
 ### Payments (simulated)
 
-The Pay plugin takes an amount in GH₵, a method (MTN MoMo, Vodafone Cash, AirtelTigo, Binance Pay) and a PIN. If the PIN is `1234`, it shows "Payment sent" and can post a receipt bubble into the chat. **No money moves.** There is no MoMo, Binance or bank integration.
+The Pay plugin takes an amount in GH₵, a method (MTN MoMo, Vodafone Cash, AirtelTigo, Binance Pay) and a PIN. If the PIN is `1234`, it shows "Demo payment — no money moved" and can post a receipt bubble ("DEMO • GH₵ … (not real)") into the chat. A yellow **DEMO ONLY** banner sits at the top of the sheet. **No money moves.** There is no MoMo, Binance or bank integration.
 
 ### Theming
 
@@ -106,10 +106,10 @@ Legend: ✅ works · 🟡 simulated (UI only) · ❌ broken / does nothing
 | Profile setup | 🟡 | Kept in memory only |
 | Chat list, filters (All / Unread / Favourites / Groups) | ✅ | Search included |
 | Send message + auto-reply | 🟡 | Random canned reply |
-| "End-to-end encrypted" banner | ❌ | **False claim.** Nothing is encrypted or transmitted (`BB-05`) |
+| Demo-mode notices | ✅ | The false "end-to-end encrypted" and "Connected to BBchat Server" claims are replaced with honest demo notices (`BB-05`) |
 | Voice / video calls | 🟡 | Shows an "On call" pill, no audio or video |
 | Status, Channels, Communities | 🟡 | Local UI only |
-| Payments (MoMo / Vodafone / AirtelTigo / Binance) | 🟡 | PIN `1234`, fake receipt (`BB-06`) |
+| Payments (MoMo / Vodafone / AirtelTigo / Binance) | 🟡 | PIN `1234`; every payment screen and receipt is labelled DEMO (`BB-06`) |
 | Polls, stickers, emoji, GIFs, location, tic-tac-toe, translate (Twi / Ga / French, 3 phrases), scheduler, broadcast | 🟡 | Local UI only |
 | Settings → Theme Dark | ❌ | Label and toast change, colours do not (`BB-04`) |
 | Settings → Notifications, Chat lock | ❌ | Toggles a label only |
@@ -189,8 +189,8 @@ Upload `index.html` (plus the logo, favicon and manifest if you fix `BB-08`) to 
 ### Pre-deploy checklist
 
 - [x] `BB-01` typing bug fixed
-- [ ] `BB-05` false "end-to-end encrypted" claim removed
-- [ ] `BB-06` payments clearly labelled **DEMO**
+- [x] `BB-05` false "end-to-end encrypted" claim removed
+- [x] `BB-06` payments clearly labelled **DEMO**
 - [ ] `BB-03` brand and naming reviewed ("WhatsApp Clone")
 - [ ] `<title>`, meta description and favicon set (`BB-09`)
 - [ ] Only the intended files are published (`BB-11`, `BB-12`)
