@@ -24,7 +24,7 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done. Edit the checkbox in the 
 |---|---|---|---|---|---|
 | 1 | BB-01 | 🔴 | Text fields lose focus after every keystroke | S | [x] quick fix 2026-11-12 |
 | 2 | BB-02 | 🔴 | App source code is missing (only a compiled bundle exists) | M–L | [ ] |
-| 3 | BB-03 | 🔴 | Branded as a "WhatsApp Clone" | S | [ ] |
+| 3 | BB-03 | 🔴 | Branded as a "WhatsApp Clone" | S | [x] naming 2026-11-12 (palette open) |
 | 4 | BB-05 | 🔴 | False "end-to-end encrypted" claim | S | [x] 2026-11-12 |
 | 5 | BB-06 | 🔴 | Fake payments use real provider names with no DEMO label | S | [x] 2026-11-12 |
 | 6 | BB-04 | 🟠 | In-app Dark theme toggle does nothing | S | [ ] |
@@ -95,6 +95,9 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 ---
 
 ### BB-03 — Branded as a "WhatsApp Clone" · 🔴 · S
+
+> ✅ **Naming fixed 2026-11-12.** The product is now "BBchat by BENBAX" in `manifest.json` (`name`), the `index-separated.html` `<title>`, `js/app.js`, `js/full-app.js`, both CSS headers and the `README-DEPLOY.md` title. `index.html` never contained "WhatsApp". `grep -ri whatsapp` now matches only this file and README.md.
+> **Still open (design decision):** the colour palette and layout still closely follow WhatsApp. Moving the primary colour toward BENBAX navy `#0a1931` / gold `#f2b705` needs the owner's sign-off.
 
 **Where:** the old `README.md` / `README-DEPLOY.md` title, `manifest.json` `name`, the `index-separated.html` `<title>`, `js/app.js`, and both CSS file headers. The UI also closely reuses WhatsApp's palette (`#075E54`, `#128C7E`, `#25D366`, `#efeae2`, `#d9fdd3`) and layout.
 

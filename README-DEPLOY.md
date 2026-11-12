@@ -1,4 +1,4 @@
-# BBchat - WhatsApp Clone by BENBAX
+# BBchat by BENBAX
 
 ## Logo
 Original BENBAX logo: 96px front/splash, 96px welcome, 32px login, 24px header, 120px pattern + 280px watermark chat background

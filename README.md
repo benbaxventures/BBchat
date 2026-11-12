@@ -3,7 +3,7 @@
 BBchat is a chat app demo branded for BENBAX (Katamanso / Apolonia / Tema, Ghana). It has a phone + OTP sign-in flow, a chat list with conversations, status, calls, channels, communities, settings and a "plugins" panel (payments, polls, games, translate, scheduler and more).
 
 > ⚠️ **Status: front-end prototype, not production-ready.**
-> There is **no backend**. Nothing is sent, stored, encrypted or paid. Every message, reply, call and payment is simulated in the browser and lost on reload. (Fixed on 2026-11-12: the typing bug `BB-01`, the false server/encryption claims `BB-05`, and the unlabelled fake payments `BB-06`.)
+> There is **no backend**. Nothing is sent, stored, encrypted or paid. Every message, reply, call and payment is simulated in the browser and lost on reload. (Fixed on 2026-11-12: the typing bug `BB-01`, the "WhatsApp Clone" naming `BB-03`, the false server/encryption claims `BB-05`, and the unlabelled fake payments `BB-06`.)
 > Read [ISSUES.md](ISSUES.md) before deploying.
 
 ---
@@ -191,7 +191,7 @@ Upload `index.html` (plus the logo, favicon and manifest if you fix `BB-08`) to 
 - [x] `BB-01` typing bug fixed
 - [x] `BB-05` false "end-to-end encrypted" claim removed
 - [x] `BB-06` payments clearly labelled **DEMO**
-- [ ] `BB-03` brand and naming reviewed ("WhatsApp Clone")
+- [x] `BB-03` "WhatsApp Clone" naming removed (palette change still open)
 - [ ] `<title>`, meta description and favicon set (`BB-09`)
 - [ ] Only the intended files are published (`BB-11`, `BB-12`)
 
