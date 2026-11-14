@@ -189,7 +189,10 @@ export default function App() {
     [gameResult, setGameResult] = React.useState(""),
     [translatePhrase, setTranslatePhrase] = React.useState("Thank you"),
     [translateLang, setTranslateLang] = React.useState("Twi"),
-    [darkMode, setDarkMode] = React.useState(false),
+    // BB-04: start from the device's light/dark setting; the Settings toggle then overrides it.
+    [darkMode, setDarkMode] = React.useState(
+      () => window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false,
+    ),
     [wallpaper, setWallpaper] = React.useState("Classic"),
     [notifications, setNotifications] = React.useState(true),
     [chatLock, setChatLock] = React.useState(false),
@@ -227,6 +230,13 @@ export default function App() {
         return () => clearTimeout(m);
       }
     }, [toast]);
+  // BB-04: put the chosen theme on <html> so the colour variables in index.css
+  // (and Tailwind `dark:` classes) apply to the whole page, body included.
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle("dark", darkMode);
+    root.classList.toggle("light", !darkMode);
+  }, [darkMode]);
   let showToast = (m) => setToast(m),
     verifyOtp = () => {
       if (otp.join("") === "123456") setScreen("profile");
@@ -1650,7 +1660,7 @@ export default function App() {
                 ? "#111b21"
                 : wallpaper === "Green"
                   ? "#d9ead9"
-                  : "#efeae2",
+                  : "var(--chatbg)", // Classic: #efeae2 in light theme, dark in dark theme (BB-04)
           }}
         >
           <div
@@ -1693,7 +1703,7 @@ export default function App() {
             }}
           >
             <div className="text-center my-2">
-              <span className="bg-white shadow text-[11px] px-3 py-1 rounded-full font-bold">
+              <span className="bg-[var(--card)] shadow text-[11px] px-3 py-1 rounded-full font-bold">
                 TODAY
               </span>
             </div>

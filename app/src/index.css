@@ -31,6 +31,27 @@
     --bubble-them: #202c33;
   }
 }
+/* BB-04: the in-app Theme toggle sets .dark or .light on <html>; these beat the device setting above. */
+:root.light {
+  --surface: #eef2ef;
+  --card: #fff;
+  --ink: #0a1931;
+  --muted: #667781;
+  --line: #dde6df;
+  --chatbg: #efeae2;
+  --bubble-me: #d9fdd3;
+  --bubble-them: #fff;
+}
+:root.dark {
+  --surface: #0b141a;
+  --card: #111b21;
+  --ink: #e9edef;
+  --muted: #8696a0;
+  --line: #222d34;
+  --chatbg: #0b141a;
+  --bubble-me: #005c4b;
+  --bubble-them: #202c33;
+}
 
 /* ---------- Base ---------- */
 * {
