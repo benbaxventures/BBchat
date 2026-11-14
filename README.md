@@ -3,7 +3,7 @@
 BBchat is a chat app demo branded for BENBAX (Katamanso / Apolonia / Tema, Ghana). It has a phone + OTP sign-in flow, a chat list with conversations, status, calls, channels, communities, settings and a "plugins" panel (payments, polls, games, translate, scheduler and more).
 
 > ⚠️ **Status: front-end prototype, not production-ready.**
-> There is **no backend**. Nothing is sent, stored, encrypted or paid. Every message, reply, call and payment is simulated in the browser and lost on reload. (Fixed on 2026-11-12: the typing bug `BB-01`, the "WhatsApp Clone" naming `BB-03`, the false server/encryption claims `BB-05`, and the unlabelled fake payments `BB-06`.)
+> There is **no backend**. Nothing is sent, stored, encrypted or paid. Every message, reply, call and payment is simulated in the browser and lost on reload. (Fixed 12–14 Nov 2026: `BB-01` typing bug, `BB-02` source code recovered into [app/](app), `BB-03` "WhatsApp Clone" naming, `BB-04` dark theme switch, `BB-05` false server/encryption claims, `BB-06` unlabelled fake payments.)
 > Read [ISSUES.md](ISSUES.md) before deploying.
 
 ---
@@ -26,11 +26,12 @@ BBchat is a chat app demo branded for BENBAX (Katamanso / Apolonia / Tema, Ghana
 
 ## 1. What this repository actually contains
 
-The repo has **one real app file** and a lot of stubs and duplicates around it.
+The app's **source code** is in `app/`, and the deployed site is **one built file**, `index.html`. Around them are stubs and duplicates from the handover.
 
 | File | Size | What it really is | Keep? |
 |---|---|---|---|
-| `index.html` | 443 KB | **The real app.** A single-file *compiled* React 18 + Tailwind 3.4 bundle (page title is still "React Artifact"), with both logos embedded as base64. | ✅ Yes, it is the only working app |
+| `app/` | — | **The app's source code** (React 18 + Vite + Tailwind 3.4). Recovered from the compiled handover file in `BB-02`. Edit here, then run `npm run release`. | ✅ Yes, this is where changes are made |
+| `index.html` | 433 KB | **The deployed app.** A single self-contained file *built from `app/`* (`npm run release`), with JS, CSS and both logos inlined. Page title is still "React Artifact" (`BB-09`). | ✅ Yes, but don't edit it by hand |
 | `index-separated.html` | 0.7 KB | A **stub**. It only shows a "BBchat – open index.html" card. It is **not** a maintainable version of the app. | ❌ Remove or replace |
 | `js/app.js` | 1.8 KB | A stub that renders the card above, plus unused helpers (`verifyOTP`, `verifyPIN`, `sendMoney`). | ❌ Remove |
 | `js/full-app.js` | 2.0 KB | Same as `js/app.js` plus a comment. **Not** the app logic. | ❌ Remove |
@@ -50,7 +51,7 @@ The repo has **one real app file** and a lot of stubs and duplicates around it.
 | `GA4-SETUP-GUIDE.md` | — | Says to replace `G-BBCHAT` in `index.html`. **That placeholder does not exist**, so no analytics is installed. | Fix (`BB-15`) |
 | `.freebuff/` | — | Local metadata from the Freebuff AI desktop tool. | Ignore in git |
 
-> 🔎 **The most important finding:** the **React source code (JSX/TSX, components, Tailwind config) is not in this repo.** Only the compiled output exists. Every fix has to be made either by editing minified JavaScript or by first recovering or rebuilding the source. See `BB-02`.
+> 🔎 **Source code (fixed in `BB-02`):** the handover contained no source code, only the compiled `index.html`. The source has been recovered from it into `app/` as readable React/JSX with meaningful names. The rebuilt app was checked against the old file screen by screen and is pixel-identical.
 
 The old README also lists a `.htaccess` file. **It does not exist.**
 
@@ -58,7 +59,9 @@ The old README also lists a `.htaccess` file. **It does not exist.**
 
 ## 2. How the app works
 
-Everything runs in the browser from `index.html`. React state lives in one large component (`Ia` in the bundle), and nothing is persisted (no `localStorage`, no API, no database).
+Everything runs in the browser. React state lives in one large component, `App` in [app/src/App.jsx](app/src/App.jsx). Its tabs (`ChatPane`, `StatusTab`, `CallsTab`, `ChannelsTab`, `CommunitiesTab`, `SettingsTab`) are inner functions that share that state. Seed data is in [app/src/data.js](app/src/data.js) and icons are in [app/src/icons.jsx](app/src/icons.jsx). Nothing is persisted (no `localStorage`, no API, no database).
+
+> The inner tab components are **called as functions** (`ChatPane({})`), not rendered as `<ChatPane />`. This is deliberate (`BB-01`): rendering a component declared inside `App` would remount it on every keystroke. To turn one into a normal component, move it out of `App` and pass the state it needs as props.
 
 ### Screen flow
 
@@ -90,7 +93,7 @@ The Pay plugin takes an amount in GH₵, a method (MTN MoMo, Vodafone Cash, Airt
 
 ### Theming
 
-Colours come from CSS variables on `:root` (`--surface`, `--card`, `--ink`, `--wa`, `--green`, `--navy`, …). Dark colours switch **only** through the OS `prefers-color-scheme` setting. The in-app "Theme → Dark" toggle does not change them (`BB-04`).
+Colours come from CSS variables on `:root` (`--surface`, `--card`, `--ink`, `--wa`, `--green`, `--navy`, …) in [app/src/index.css](app/src/index.css). The app starts from the device's light/dark setting. The **Settings → Theme** toggle then puts `.dark` or `.light` on `<html>`, which overrides it (fixed in `BB-04`).
 
 ---
 
@@ -111,7 +114,7 @@ Legend: ✅ works · 🟡 simulated (UI only) · ❌ broken / does nothing
 | Status, Channels, Communities | 🟡 | Local UI only |
 | Payments (MoMo / Vodafone / AirtelTigo / Binance) | 🟡 | PIN `1234`; every payment screen and receipt is labelled DEMO (`BB-06`) |
 | Polls, stickers, emoji, GIFs, location, tic-tac-toe, translate (Twi / Ga / French, 3 phrases), scheduler, broadcast | 🟡 | Local UI only |
-| Settings → Theme Dark | ❌ | Label and toast change, colours do not (`BB-04`) |
+| Settings → Theme (Light / Dark) | ✅ | Fixed in `BB-04`; works both ways and follows the device setting at start |
 | Settings → Notifications, Chat lock | ❌ | Toggles a label only |
 | Settings → Wallpaper | ✅ | |
 | Log out | 🟡 | Returns to welcome but keeps all state in memory |
@@ -137,23 +140,40 @@ In the OTP screen, click the first box and type the six digits; focus moves to t
 
 ## 5. Running locally
 
-There is no build step and no `package.json`. Any static file server works.
+Requirements: Node.js 18+ (tested on Node 24), a modern browser, and an internet connection for Google Fonts (Sora, Plus Jakarta Sans). Without the fonts the app falls back to system fonts.
 
-Open the file directly in your browser:
-
-```bash
-start index.html
-```
-
-Or serve the folder (recommended, closer to production):
+**Work on the source** (live reload):
 
 ```bash
-npx http-server@14.1.1 . -p 8080 -c-1
+cd app
 ```
 
-Then open http://localhost:8080.
+```bash
+npm install
+```
 
-Requirements: a modern browser (the bundle is an ES module and uses `100dvh`), plus an internet connection for Google Fonts (Sora, Plus Jakarta Sans). Without it the app falls back to system fonts.
+```bash
+npm run dev
+```
+
+Then open the URL Vite prints (usually http://localhost:5173).
+
+**Build and update the deployed file:**
+
+```bash
+npm run release
+```
+
+This builds one self-contained `app/dist/index.html` and copies it to the repo-root `index.html`, which every hosting option below serves. Commit both the source change and the new root `index.html`.
+
+| Script (in `app/`) | What it does |
+|---|---|
+| `npm run dev` | Development server with live reload |
+| `npm run build` | Builds `app/dist/index.html` only |
+| `npm run release` | Builds, then copies the build to the root `index.html` |
+| `npm run preview` | Serves the last build locally |
+
+**Just view the current build** (no Node needed): open the root `index.html` in a browser.
 
 ---
 
@@ -244,7 +264,7 @@ See **[ISSUES.md](ISSUES.md)**. It is a numbered, prioritised list (`BB-01` … 
 
 To move from prototype to a maintainable product:
 
-1. **Recover or rebuild the source** as a Vite + React + TypeScript + Tailwind project (`src/`, `public/`, `package.json`). Split the 2,600-line single component into one file per screen and plugin.
+1. ✅ **Source recovered** as a Vite + React + Tailwind project in `app/` (`BB-02`). Next: split the 2,300-line `App.jsx` into one file per screen and plugin, and optionally move to TypeScript.
 2. **Build output** goes to `dist/`, and only `dist/` is deployed.
 3. **Backend for real chat** (when ready): auth with real SMS OTP (e.g. Firebase Auth, Supabase, or Twilio Verify), a realtime message store (Firebase / Supabase Realtime / your own WebSocket server), and media storage.
 4. **Payments**: only through an official provider integration (MTN MoMo API, Paystack, Flutterwave, etc.) with server-side verification. Never trust the client.

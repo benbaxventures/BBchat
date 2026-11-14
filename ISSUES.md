@@ -23,11 +23,11 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done. Edit the checkbox in the 
 | # | ID | Sev | Title | Effort | Status |
 |---|---|---|---|---|---|
 | 1 | BB-01 | 🔴 | Text fields lose focus after every keystroke | S | [x] quick fix 2026-11-12 |
-| 2 | BB-02 | 🔴 | App source code is missing (only a compiled bundle exists) | M–L | [ ] |
+| 2 | BB-02 | 🔴 | App source code is missing (only a compiled bundle exists) | M–L | [x] 2026-11-14 (recovered into `app/`) |
 | 3 | BB-03 | 🔴 | Branded as a "WhatsApp Clone" | S | [x] naming 2026-11-12 (palette open) |
 | 4 | BB-05 | 🔴 | False "end-to-end encrypted" claim | S | [x] 2026-11-12 |
 | 5 | BB-06 | 🔴 | Fake payments use real provider names with no DEMO label | S | [x] 2026-11-12 |
-| 6 | BB-04 | 🟠 | In-app Dark theme toggle does nothing | S | [ ] |
+| 6 | BB-04 | 🟠 | In-app Dark theme toggle does nothing | S | [x] 2026-11-14 |
 | 7 | BB-07 | 🟠 | No persistence; log out does not clear state | M | [ ] |
 | 8 | BB-10 | 🟠 | Public dashboard shows made-up statistics | S | [ ] |
 | 9 | BB-11 | 🟠 | Stubs and duplicate files pose as real code | S | [ ] |
@@ -50,7 +50,7 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done. Edit the checkbox in the 
 ### BB-01 — Text fields lose focus after every keystroke · 🔴 · S
 
 > ✅ **Quick fix applied 2026-11-12.** In `index.html`, all 17 call sites now call the inner components as plain functions (`Pt({…})`, `Ka({…})`, `Wa({})`, …) instead of `o(Pt,{…})`. Tested in the browser, typing key by key: the phone number (9 digits), OTP (auto-advance works while the countdown ticks), profile name, chat search ("mum" filters to Mum) and the message composer ("hello" + Enter sends, focus survives the auto-reply). Status, Calls, Channels, Settings and Chats still render, with no console errors.
-> **Still open:** the *proper* fix (move the components to module scope) belongs to the source rebuild in `BB-02`.
+> **2026-11-14:** carried into the recovered source (`BB-02`). In [app/src/App.jsx](app/src/App.jsx) the inner tabs are called as `PageShell({…})`, `ChatPane({…})`, `SettingsTab({})`, etc. A comment in the README (section 2) explains why. Moving them to module scope with props is an optional refactor, not a bug.
 
 **Where:** `index.html`, inline `<script type="module">`, main component `Ia`. Seven sub-components are **declared inside** `Ia` and rendered as components: `Pt` (page wrapper), `Ka` (chat pane), `Wa`, `qa`, `Xa`, `Va`, `ja` (Status / Calls / Channels / Communities / Settings).
 
@@ -79,6 +79,11 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 ---
 
 ### BB-02 — App source code is missing · 🔴 · M–L
+
+> ✅ **Fixed 2026-11-14: source recovered into `app/`.** The original source was not available, so it was recovered from the compiled bundle with a Babel transform. The `jsx()` calls became JSX, and the minified names became meaningful ones (`Ia`→`App`, `Ka`→`ChatPane`, `Ae`→`sendMessage`, `Qt`→`payAmount`, about 100 in all). Seed data is in `src/data.js`, icons in `src/icons.jsx` and styles in `src/index.css` (Tailwind 3.4, `darkMode: "class"`).
+> - **Build:** Vite 6 + `vite-plugin-singlefile` produces one self-contained `dist/index.html` (433 KB). `npm run release` copies it to the root `index.html`, so hosting is unchanged.
+> - **Verified:** headless Edge drove the old and rebuilt apps through 12 screens (welcome, phone, profile, chat while typing, chat list, Status, Calls, Channels, Settings, payment, dark Settings, dark chat). **Pixels and text are identical**, with no console errors. `npm audit`: 0 vulnerabilities.
+> - **Still optional:** split the 2,300-line `App.jsx` into one file per screen, and move to TypeScript.
 
 **Where:** the whole repo. `index.html` is the compiled output of a React 18 + Tailwind 3.4.18 "artifact" export (the `<title>` is literally "React Artifact"). There is no `src/`, no `package.json` and no Tailwind config.
 `index-separated.html`, `js/app.js` and `js/full-app.js` *claim* to be the maintainable version, but they are only 30-line stubs that print "open index.html".
@@ -146,6 +151,12 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 ## 🟠 High
 
 ### BB-04 — In-app Dark theme toggle does nothing · 🟠 · S
+
+> ✅ **Fixed 2026-11-14** (in `app/src/App.jsx` and `app/src/index.css`, released to `index.html`).
+> - The chosen theme is now set on `<html>` as `.dark` / `.light`, which override the device setting. The app starts from the device setting, so the Settings label is always correct.
+> - The Classic chat wallpaper and the "TODAY" chip use theme variables. In light mode they keep the same colours.
+> - **Found while testing:** before the fix, toggling Dark made the chat bubbles dark but left their text dark, so messages were unreadable. On a phone set to dark mode, Settings also said "Light".
+> - **Verified** in headless Edge from both a light and a dark device setting: Dark → `rgb(11,20,26)`, Light → `rgb(238,242,239)`, and back again. All 10 light-theme screens are pixel-identical to before.
 
 **Where:** Settings → Theme. It sets class `dark` on the root wrapper, but colours come from CSS variables that switch only inside `@media (prefers-color-scheme: dark)`. Only 4 `dark:` utilities exist.
 
@@ -305,6 +316,6 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 |---|---|---|
 | **0 — Baseline** (½ day) | BB-20 (git baseline + `.gitignore`), BB-11, BB-14 | Clean, honest repo |
 | **1 — Make it usable & honest** (1 day) | BB-01 (quick patch), BB-05, BB-06, BB-03, BB-10, BB-09, BB-12 | Safe to put on a public URL as a **demo** |
-| **2 — Rebuild source** (2–4 days) | BB-02, then the proper BB-01 fix, BB-04, BB-16, BB-13 | Maintainable Vite project, small bundle |
+| **2 — Rebuild source** (2–4 days) | BB-02 ✅ done, BB-04 ✅ done, BB-16, BB-13 | Maintainable Vite project, small bundle |
 | **3 — Demo polish** (1–2 days) | BB-07, BB-08, BB-17, BB-18, BB-19, BB-15 | Installable PWA demo with persistence |
 | **4 — Real product** | Backend, real OTP, real messaging, real payments | Out of scope for this review; needs product decisions |
