@@ -111,7 +111,7 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 
 ### BB-05 — False "end-to-end encrypted" claim · 🔴 · S
 
-> ✅ **Fixed 2026-11-12.** Splash: "Loading BBchat demo…". Header badge: "Demo mode • on this device only". Chat banner: "🔒 Demo mode — messages stay on this device and are not sent or encrypted". Checked in the browser; no "end-to-end" or "BBchat Server" text is left in `index.html`.
+> ✅ **Fixed 2026-11-12.** Splash: "Loading BBchat demo…". Header badge: "Demo mode • local only". Chat banner: "🔒 Demo mode — messages stay on this device and are not sent or encrypted". Checked in the browser; no "end-to-end" or "BBchat Server" text is left in `index.html`.
 
 **Where:** chat pane banner: "🔒 Messages are end-to-end encrypted on BBchat • BENBAX watermark active". Also the splash text "Connecting to BBchat Server…" and the app header badge "Connected to BBchat Server".
 
