@@ -1,6 +1,6 @@
 # BBchat — System Design
 
-Status: 17 November 2026 · Branch `review/bb-fixes` · Covers the system today (v1.1 demo) and the target system (v2 product).
+Status: 19 November 2026 · Branch `review/bb-fixes` · Covers the system today (v1.2 demo) and the target system (v2 product).
 
 ---
 
@@ -13,53 +13,52 @@ The site was handed over as a **front-end-only prototype** with no source code a
 | Stage | Goal | Done when |
 |---|---|---|
 | **1. Honest, working demo** *(done, not deployed)* | Fix what was broken or misleading (`BB-01` to `BB-06`), recover editable source, document everything | All six fixes verified, source in `app/`, proof report delivered |
-| **2. Demo ready to publish** *(next)* | One hosting platform, a clean repo, no fake numbers, correct page metadata, chats saved on the device, installable on phones | `BB-07` to `BB-20` closed; live on `bbchat.benbaxco.com` |
+| **2. Demo ready to publish** *(BB-07 to BB-14 done; BB-15 to BB-20 and go-live next)* | One hosting platform, a clean repo, no fake numbers, correct page metadata, chats saved on the device, installable on phones | `BB-07` to `BB-20` closed; live on `bbchat.benbaxco.com` |
 | **3. Real product (v2)** | Real accounts with SMS sign-in, real-time messages between people, media, notifications, real payments through a licensed provider | People in Tema can sign up and chat with each other for real |
 
 **Guiding rules:** never claim a feature the system doesn't have (encryption, payments, servers); keep one source of truth (`app/`); and make every change verifiable (git history plus before/after proof).
 
 ---
 
-## 2. The system today (v1.1 demo)
+## 2. The system today (v1.2 demo)
 
 ### 2.1 Overview
 
 ```mermaid
 flowchart LR
-  dev["Developer<br/>edits app/src"] -->|npm run release| build["Vite build<br/>(React + Tailwind,<br/>single-file plugin)"]
-  build -->|one self-contained file| root["index.html<br/>(repo root, ~433 KB)"]
-  root -->|git push| host["Static hosting<br/>(Vercel / Netlify /<br/>GitHub Pages / cPanel)"]
-  host -->|HTTPS| browser["User's browser<br/>(phone or desktop)"]
-  browser -.->|fonts only| gfonts["Google Fonts"]
+  dev["Developer<br/>edits app/src"] -->|git push| gh["GitHub<br/>(CI: audit + build checks)"]
+  gh -->|Vercel builds from source| build["Vite build → app/dist<br/>(hashed JS/CSS, fonts,<br/>logo, icons, sw.js)"]
+  build -->|HTTPS + CDN| browser["User's browser / installed app<br/>(phone or desktop)"]
+  browser --> ls[("localStorage<br/>chats + settings<br/>on this device")]
+  browser --> swc[("Service-worker cache<br/>app works offline")]
 ```
 
 * **No backend, no database, no API.** The whole app runs inside the browser.
-* **All data is sample data** (`app/src/data.js`), held in React memory and lost on reload.
-* **The only external request** is to Google Fonts for Sora and Plus Jakarta Sans.
+* **Data stays on the device:** after sign-in, chats and settings are saved in `localStorage` and cleared on log out (BB-07).
+* **No third-party requests:** fonts are bundled with the app (BB-13).
+* **Installable and offline-capable** through the manifest and service worker (BB-08).
 
 ### 2.2 Repository layout
 
 ```
 BBchat/
-├── app/                      ← SOURCE (edit here)
+├── app/                        ← SOURCE (edit here)
 │   ├── src/
-│   │   ├── main.jsx          entry: mounts <App/> into #root
-│   │   ├── App.jsx           all screens + state (~2,300 lines)
-│   │   ├── data.js           seed chats, countries, replies, emojis, translations
-│   │   ├── icons.jsx         35 Lucide icons
-│   │   ├── index.css         Tailwind + theme variables + animations
-│   │   └── assets/           BENBAX logos (500 px, 64 px)
-│   ├── index.html            Vite entry page
-│   ├── vite.config.js        React + single-file build → dist/index.html
-│   ├── tailwind.config.js    darkMode: "class"
-│   ├── scripts/release.mjs   copies dist/index.html → ../index.html
-│   └── package.json          React 18.3.1, Vite 6.4.6, Tailwind 3.4.17
-├── index.html                ← BUILT APP (deployed; don't edit by hand)
-├── vercel.json, _redirects   hosting configs (choose one: BB-12)
-├── .github/workflows/        GitHub Pages deploy
-├── manifest.json, sw.js      PWA files (not wired up yet: BB-08)
-├── README.md, ISSUES.md      documentation and fix plan
-└── (stubs and duplicates: js/, css/, dashboard*.html, assets/ → cleanup in BB-11)
+│   │   ├── main.jsx            entry: fonts, <App/> (remounted on log out), service worker
+│   │   ├── App.jsx             all screens + state (~2,300 lines)
+│   │   ├── storage.js          save / load / clear on the device (BB-07)
+│   │   ├── data.js             seed chats, countries, replies, emojis, translations
+│   │   ├── icons.jsx           35 Lucide icons
+│   │   ├── index.css           Tailwind + theme variables + animations
+│   │   └── assets/             logo 288 px WebP + 64 px PNG (+ 500 px master)
+│   ├── public/                 manifest.webmanifest, sw.js, icons/, favicon.ico, og-image.png
+│   ├── index.html              title, description, sharing tags, manifest link
+│   ├── vite.config.js          normal multi-file build → app/dist
+│   └── package.json            React 18.3.1, Vite 6.4.6, Tailwind 3.4.17, @fontsource-variable
+├── vercel.json                 the only host: builds app/, publishes app/dist only
+├── .github/workflows/ci.yml    checks on every push (no deploy)
+├── docs/, proof/               diagrams; management proof reports (never published)
+└── README.md, ISSUES.md, SYSTEM-DESIGN.md
 ```
 
 ### 2.3 Inside the app
@@ -91,18 +90,22 @@ flowchart TD
 | **Payments** | Form with PIN `1234` that produces a **DEMO** receipt. No money moves (BB-06). |
 | **Theme** | CSS variables in `index.css`. `.dark` / `.light` on `<html>` override the device setting (BB-04). |
 | **Inner tabs** | Called as functions (`ChatPane({})`), not as `<ChatPane/>`, so inputs keep focus (BB-01). |
-| **Persistence** | None. A reload resets everything (BB-07). |
+| **Persistence** | `storage.js` saves the signed-in state to `localStorage` after every change; log out clears it and remounts the app (BB-07). |
+| **Offline / install** | `manifest.webmanifest` + `sw.js`: app shell and hashed files cached; pages network-first (BB-08). |
 
 ### 2.4 Build and release
 
-| Step | Command (in `app/`) | Result |
+| Step | Command | Result |
 |---|---|---|
-| Develop | `npm run dev` | Live-reload server at `localhost:5173` |
-| Build | `npm run build` | `app/dist/index.html`: one file with JS, CSS and logos inlined |
-| Release | `npm run release` | Build, then copy to the root `index.html` |
-| Deploy | commit, then push to the chosen host | Host serves `index.html` |
+| Develop | `npm run dev` (in `app/`) | Live-reload server at `localhost:5173` |
+| Check | push to GitHub | CI: `npm ci`, `npm audit --omit=dev`, `npm run build`, output checks |
+| Deploy | merge to `main` | Vercel runs `npm run build --prefix app` and serves `app/dist` |
 
-Verification used so far: headless-Edge screen captures compared pixel by pixel across 12 screens, and `npm audit` (0 vulnerabilities).
+Verification used so far:
+- headless-Edge screen captures compared pixel by pixel across 12 screens;
+- Chrome's installability check (0 errors) and an offline reload;
+- slow-4G cold-load timing (first screen 0.83 s, 144 KB);
+- `npm audit` (0 vulnerabilities).
 
 ---
 
@@ -255,7 +258,7 @@ The demo's message shape (`{ id, from, text, kind, time, poll?, amount?, method?
 
 ```mermaid
 flowchart LR
-  P1["Stage 1 ✅<br/>BB-01…06 fixed<br/>source recovered"] --> P2["Stage 2: publish demo<br/>BB-10 fake dashboard<br/>BB-11/12 cleanup + one host<br/>BB-09 metadata<br/>BB-07 save on device<br/>BB-08 PWA · BB-13 size"]
+  P1["Stage 1 ✅<br/>BB-01…06 fixed<br/>source recovered"] --> P2["Stage 2: publish demo<br/>BB-07…14 ✅ done<br/>BB-15…20 polish<br/>+ Vercel project + DNS"]
   P2 --> D["Deploy to<br/>bbchat.benbaxco.com"]
   D --> P3["Stage 3: v2 product<br/>auth + DB + realtime<br/>media + push<br/>payments (provider)"]
 ```

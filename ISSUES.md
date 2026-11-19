@@ -28,14 +28,14 @@ Status: `[ ]` open · `[~]` in progress · `[x]` done. Edit the checkbox in the 
 | 4 | BB-05 | 🔴 | False "end-to-end encrypted" claim | S | [x] 2026-11-12 |
 | 5 | BB-06 | 🔴 | Fake payments use real provider names with no DEMO label | S | [x] 2026-11-12 |
 | 6 | BB-04 | 🟠 | In-app Dark theme toggle does nothing | S | [x] 2026-11-14 |
-| 7 | BB-07 | 🟠 | No persistence; log out does not clear state | M | [ ] |
-| 8 | BB-10 | 🟠 | Public dashboard shows made-up statistics | S | [ ] |
-| 9 | BB-11 | 🟠 | Stubs and duplicate files pose as real code | S | [ ] |
-| 10 | BB-12 | 🟠 | Four deploy targets configured; GitHub Pages publishes everything | S | [ ] |
-| 11 | BB-14 | 🟠 | Docs are wrong (missing `.htaccess`, wrong "separated" version, demo phone number) | S | [ ] |
-| 12 | BB-08 | 🟡 | PWA is broken: manifest not linked, service worker never registered and caches wrong files | M | [ ] |
-| 13 | BB-09 | 🟡 | `<title>` is "React Artifact"; no meta description, favicon or social tags | S | [ ] |
-| 14 | BB-13 | 🟡 | 443 KB HTML: 200 KB of base64 logo and the full Tailwind preflight inline | M | [ ] |
+| 7 | BB-07 | 🟠 | No persistence; log out does not clear state | M | [x] 2026-11-19 |
+| 8 | BB-10 | 🟠 | Public dashboard shows made-up statistics | S | [x] 2026-11-19 |
+| 9 | BB-11 | 🟠 | Stubs and duplicate files pose as real code | S | [x] 2026-11-19 |
+| 10 | BB-12 | 🟠 | Four deploy targets configured; GitHub Pages publishes everything | S | [x] 2026-11-19 |
+| 11 | BB-14 | 🟠 | Docs are wrong (missing `.htaccess`, wrong "separated" version, demo phone number) | S | [x] 2026-11-19 |
+| 12 | BB-08 | 🟡 | PWA is broken: manifest not linked, service worker never registered and caches wrong files | M | [x] 2026-11-19 |
+| 13 | BB-09 | 🟡 | `<title>` is "React Artifact"; no meta description, favicon or social tags | S | [x] 2026-11-19 |
+| 14 | BB-13 | 🟡 | 443 KB HTML: 200 KB of base64 logo and the full Tailwind preflight inline | M | [x] 2026-11-19 |
 | 15 | BB-15 | 🟡 | GA4 guide refers to a placeholder that does not exist | S | [ ] |
 | 16 | BB-16 | 🟡 | Invalid CSS and an undefined safe-area variable | S | [ ] |
 | 17 | BB-17 | 🟡 | OTP input: no paste, no labels; phone number not normalised | S | [ ] |
@@ -170,6 +170,9 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 
 ### BB-07 — No persistence; log out does not clear state · 🟠 · M
 
+> ✅ **Fixed 2026-11-19.** New [app/src/storage.js](app/src/storage.js) saves the signed-in user's profile, chats, open chat, theme, wallpaper, plugins, followed channels, status text and scheduled items in `localStorage` (`bbchat:v1`) after every change, with every access wrapped in try/catch. On return, the splash goes straight to the chats. **Log out** (3 buttons) deletes the saved data and remounts the app from scratch (new React key in `main.jsx`).
+> **Verified** in headless Edge: send "Hello from Tema" → reload → still signed in, message still there. Log out → reload → welcome screen, message gone.
+
 **Where:** all state is `useState` in `Ia`. There is no `localStorage` and no backend.
 
 **Impact:** a page reload sends the user back to the splash and the sign-in flow, and every message and setting is lost. "Log out" only switches the screen back to welcome; profile and chats stay in memory.
@@ -183,6 +186,8 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 
 ### BB-10 — Public dashboard shows made-up statistics · 🟠 · S
 
+> ✅ **Fixed 2026-11-19.** `dashboard.html` and `dashboard-bbchat.html` were deleted. **Verified:** `/dashboard.html` now returns 404 (before: 200 with "Total Users: 1,247 …").
+
 **Where:** `dashboard.html` and its duplicate `dashboard-bbchat.html`: "Total Users: 1,247 • Total Chats: 3,420 • Total Minutes: 12,890 • Active Now: 42". Static text with no auth, reachable at `/dashboard`.
 
 **Impact:** fabricated metrics on a public URL mislead anyone who finds them (investors, partners, users).
@@ -192,6 +197,8 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 ---
 
 ### BB-11 — Stubs and duplicate files pose as real code · 🟠 · S
+
+> ✅ **Fixed 2026-11-19.** Removed `index-separated.html`, `js/`, `css/`, `assets/`, the root logo and favicon copies, `manifest.json`, `sw.js`, `README-DEPLOY.md`, `GA4-SETUP-GUIDE.md` and the root `index.html` (Vercel now builds from `app/`). Assets now live only in `app/src/assets` and `app/public`.
 
 **Duplicates (byte-identical):** `dashboard.html` = `dashboard-bbchat.html` · `README.md`(old) = `README-DEPLOY.md` · `benbax-logo.png` = `assets/benbax-logo.png` · `favicon.ico` = `assets/favicon.ico` · `benbax-logo-64.png` = `assets/benbax-logo-64.png`.
 **Near-duplicates / stubs:** `css/style.css` ≈ `css/full-style.css` · `js/app.js` ≈ `js/full-app.js` · `index-separated.html`.
@@ -204,6 +211,8 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 
 ### BB-12 — Four deploy targets; GitHub Pages publishes everything · 🟠 · S
 
+> ✅ **Fixed 2026-11-19. Host: Vercel only.** [vercel.json](vercel.json) builds from source (`npm ci/build --prefix app`) and publishes **only `app/dist`**, so `proof/`, `docs/` and the markdown files are never served. `_redirects` (Netlify) was removed. The GitHub Pages workflow was replaced by [ci.yml](.github/workflows/ci.yml), which builds, audits and checks the output on every push and publishes nothing. **Still to do (needs BENBAX access):** create the Vercel project and point the DNS record.
+
 **Where:** `vercel.json`, `_redirects` (Netlify), `.github/workflows/static.yml` (GitHub Pages, `path: '.'`), and cPanel instructions.
 
 **Impact:** with GitHub Pages enabled, every push to `main` publishes the whole repo, including `.freebuff/project-id`, internal docs and the fake dashboard. Two hosts behind one domain also cause confusion.
@@ -213,6 +222,8 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 ---
 
 ### BB-14 — Docs are wrong · 🟠 · S
+
+> ✅ **Fixed 2026-11-19.** [README.md](README.md) was rewritten for the new layout, the Vercel-only deploy, saving on the device, offline and install. The misleading `README-DEPLOY.md` (which included a personal phone number) and `GA4-SETUP-GUIDE.md` were deleted. Analytics remains BB-15.
 
 - The old README lists `.htaccess`. **It does not exist.**
 - It says `index-separated.html` is "for maintenance". It is a stub (BB-02).
@@ -227,6 +238,9 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 
 ### BB-08 — PWA is broken · 🟡 · M
 
+> ✅ **Fixed 2026-11-19.** New [manifest.webmanifest](app/public/manifest.webmanifest) (192, 512 and maskable icons, `start_url` "/", standalone) linked from `index.html`. A new [sw.js](app/public/sw.js) is registered in production: it caches the app shell and the current JS/CSS on install, uses network-first for pages, and deletes old caches. The old root `manifest.json` and `sw.js` were removed.
+> **Verified:** Chrome/Edge installability check (`Page.getInstallabilityErrors`) shows **0 errors** (before: `no-manifest`). With the network switched off, a reload **still opens the app** (before: browser error page).
+
 - `index.html` has no `<link rel="manifest">`, and nothing calls `navigator.serviceWorker.register`.
 - `sw.js` pre-caches `css/style.css` and `js/app.js` (unused stubs), uses cache-first forever, never deletes old caches and has no `skipWaiting` or update path. **If it is registered as-is, users get stuck on old versions.**
 - `manifest.json`: `start_url: "/index.html"` breaks under a sub-path (GitHub Pages `/BBchat/`, cPanel `/bbchat/`). Icons are 64 and 500; installability needs **192×192 and 512×512** (plus a maskable icon).
@@ -238,6 +252,8 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 ---
 
 ### BB-09 — Page metadata · 🟡 · S
+
+> ✅ **Fixed 2026-11-19.** `app/index.html` now has the title "BBchat by BENBAX — Chat · Call · Connect", a meta description, theme colour, canonical URL, favicon (ico + 32 px PNG), apple-touch-icon, Open Graph and Twitter tags, and a 1200×630 preview image ([og-image.png](app/public/og-image.png)).
 
 `<title>React Artifact</title>`. No `meta description`, no favicon link, no `theme-color`, no Open Graph or Twitter tags.
 
@@ -257,6 +273,13 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 ---
 
 ### BB-13 — Page weight · 🟡 · M
+
+> ✅ **Fixed 2026-11-19.**
+> - The single-file build was replaced by a normal build: content-hashed JS/CSS/images, cached for a year (`vercel.json`).
+> - The logo is a 288 px WebP (7 KB) instead of the base64 500 px PNG (148 KB).
+> - Fonts are self-hosted variable fonts (`@fontsource-variable/sora`, `…/plus-jakarta-sans`), so there is no render-blocking Google Fonts request, and they work offline.
+> - **Measured** cold load on simulated slow 4G (150 ms, 1.6 Mbps; median of 3): **first screen 1.92 s → 0.83 s**, fonts ready 2.83 s → 1.29 s, data **272 KB → 144 KB**.
+> - Visual check: 10 of 12 screens are pixel-identical; the other two differ by 3 px and 200 px (the cedi sign "₵" glyph).
 
 `index.html` is **443 KB**: ≈ 198 KB is the 500×500 logo as base64 (shown at most 96 px), ≈ 6 KB the 64 px logo, plus the full Tailwind preflight and a second copy of the Google Fonts `@import`.
 
@@ -314,7 +337,7 @@ Match on a preceding `(`, `,`, `:`, `?` or space so that identifiers like `Lo(Pt
 
 | Sprint | Items | Outcome |
 |---|---|---|
-| **0 — Baseline** (½ day) | BB-20 (git baseline + `.gitignore`), BB-11, BB-14 | Clean, honest repo |
+| **0 — Baseline** (½ day) | BB-20 (git baseline + `.gitignore`) ✅, BB-11 ✅, BB-14 ✅ | Clean, honest repo |
 | **1 — Make it usable & honest** (1 day) | BB-01 (quick patch), BB-05, BB-06, BB-03, BB-10, BB-09, BB-12 | Safe to put on a public URL as a **demo** |
 | **2 — Rebuild source** (2–4 days) | BB-02 ✅ done, BB-04 ✅ done, BB-16, BB-13 | Maintainable Vite project, small bundle |
 | **3 — Demo polish** (1–2 days) | BB-07, BB-08, BB-17, BB-18, BB-19, BB-15 | Installable PWA demo with persistence |
