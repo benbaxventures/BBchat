@@ -1,0 +1,61 @@
+{
+  "expo": {
+    "name": "BBchat",
+    "slug": "bbchat",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#F5F8F3",
+    "icon": "./assets/benbax-logo.png",
+    "splash": {
+      "backgroundColor": "#F5F8F3"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bbchat.app"
+    },
+    "android": {
+      "package": "com.bbchat.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/benbax-logo.png",
+        "backgroundColor": "#EAF7EB"
+      }
+    },
+    "plugins": [
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow BBchat to use your microphone to record voice messages."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow BBchat to access photos you choose to share in chats.",
+          "cameraPermission": "Allow BBchat to take photos to share in chats."
+        }
+      ],
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Allow BBchat to import contacts you choose to start conversations."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow BBchat to use your current location when you choose to share it in a conversation."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/benbax-logo.png",
+          "color": "#2EBC3B",
+          "defaultChannel": "messages"
+        }
+      ],
+      "expo-secure-store"
+    ]
+  }
+}
