@@ -110,6 +110,10 @@ Verification used so far: headless-Edge screen captures compared pixel by pixel 
 
 ### 3.1 Overview
 
+![BBchat MVP system architecture](docs/architecture-mvp.png)
+
+*Editable source: [docs/architecture-mvp.svg](docs/architecture-mvp.svg).*
+
 ```mermaid
 flowchart LR
   subgraph Client

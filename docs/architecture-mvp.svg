@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1010" viewBox="0 0 1600 1010" font-family="Segoe UI, system-ui, sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3d4b5c"/>
+    </marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8a94a3"/>
+    </marker>
+    <style>
+      .h1{font-size:26px;font-weight:700;fill:#0a1931}
+      .sub{font-size:14px;fill:#5b6675}
+      .ct{font-size:15px;font-weight:700;fill:#0a1931;letter-spacing:.3px}
+      .bt{font-size:15px;font-weight:700;fill:#0a1931}
+      .bs{font-size:12.5px;fill:#3d4b5c}
+      .lbl{font-size:12px;fill:#3d4b5c;font-weight:600}
+      .lbld{font-size:12px;fill:#8a94a3;font-weight:600}
+      .line{stroke:#3d4b5c;stroke-width:1.8;fill:none}
+      .dline{stroke:#8a94a3;stroke-width:1.8;fill:none;stroke-dasharray:6 5}
+      .box{fill:#fff;stroke:#c9d2dc;stroke-width:1.2}
+      .boxd{fill:#fff;stroke:#a7b0bb;stroke-width:1.2;stroke-dasharray:6 5}
+    </style>
+  </defs>
+
+  <rect width="1600" height="1010" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="40" y="44" class="h1">BBchat MVP — System Architecture</text>
+  <text x="40" y="70" class="sub">MVP: SMS sign-in · 1:1 and group chat · photos and voice notes · status · channels · push notifications.   Dashed = after the MVP (Phase 3).</text>
+
+  <!-- ===== Column 1: client ===== -->
+  <rect x="30" y="100" width="320" height="770" rx="14" fill="#eef4fb" stroke="#bcd0e6"/>
+  <text x="50" y="128" class="ct">USERS' DEVICES</text>
+  <text x="50" y="147" class="bs">Android Chrome first · iPhone · desktop</text>
+
+  <rect x="50" y="165" width="280" height="685" rx="12" class="box"/>
+  <text x="70" y="195" class="bt">BBchat app (PWA)</text>
+  <text x="70" y="215" class="bs">React 18 · Vite · Tailwind</text>
+  <text x="70" y="233" class="bs">source in app/ (recovered, BB-02)</text>
+
+  <text x="70" y="270" class="lbl">SCREENS</text>
+  <text x="70" y="292" class="bs">• Sign-in: phone + SMS code</text>
+  <text x="70" y="312" class="bs">• Chats: 1:1 and groups</text>
+  <text x="70" y="332" class="bs">• Status (24 h updates)</text>
+  <text x="70" y="352" class="bs">• Channels and communities</text>
+  <text x="70" y="372" class="bs">• Profile and settings</text>
+  <text x="70" y="392" class="bs">• Polls, stickers, translate</text>
+
+  <text x="70" y="430" class="lbl">IN THE APP</text>
+  <text x="70" y="452" class="bs">• Supabase JS client (one SDK</text>
+  <text x="70" y="470" class="bs">  for auth, data, realtime, files)</text>
+  <text x="70" y="490" class="bs">• Messages show instantly,</text>
+  <text x="70" y="508" class="bs">  then confirmed by the server</text>
+
+  <text x="70" y="546" class="lbl">OFFLINE (SERVICE WORKER)</text>
+  <text x="70" y="568" class="bs">• App opens without signal</text>
+  <text x="70" y="586" class="bs">• Unsent messages queued</text>
+  <text x="70" y="604" class="bs">  and sent on reconnect</text>
+  <text x="70" y="622" class="bs">• Receives push notifications</text>
+
+  <rect x="70" y="650" width="240" height="80" rx="10" class="boxd"/>
+  <text x="85" y="676" class="lbld">LATER (PHASE 3)</text>
+  <text x="85" y="697" class="bs">• Real payments (DEMO today)</text>
+  <text x="85" y="716" class="bs">• Voice and video calls</text>
+
+  <rect x="70" y="750" width="240" height="82" rx="10" fill="#fef3f2" stroke="#f6c9c4"/>
+  <text x="85" y="775" class="lbl" fill="#b42318" style="fill:#b42318">RULES</text>
+  <text x="85" y="795" class="bs">• No PINs or secrets in the app</text>
+  <text x="85" y="813" class="bs">• No false claims (BB-05/06)</text>
+
+  <!-- ===== Hosting ===== -->
+  <rect x="470" y="100" width="620" height="78" rx="12" class="box" stroke="#9fb3c8"/>
+  <text x="490" y="130" class="bt">Vercel — static hosting + CDN</text>
+  <text x="490" y="152" class="bs">Serves the built app (index.html) at bbchat.benbaxco.com · HTTPS · free SSL · preview links</text>
+  <text x="490" y="169" class="bs">No server code here: just files.</text>
+
+  <!-- ===== Column 2: Supabase ===== -->
+  <rect x="460" y="205" width="640" height="665" rx="14" fill="#eef7f3" stroke="#9fd0bb"/>
+  <text x="480" y="233" class="ct">SUPABASE — MANAGED BACKEND</text>
+  <text x="790" y="233" class="bs">one project: auth · database · realtime · files · functions</text>
+
+  <rect x="480" y="250" width="600" height="80" rx="10" class="box"/>
+  <text x="500" y="278" class="bt">Auth</text>
+  <text x="500" y="299" class="bs">Phone number → SMS code (OTP) → session token (JWT)</text>
+  <text x="500" y="317" class="bs">Numbers stored as +233… (E.164). Rate-limited to stop SMS abuse.</text>
+
+  <rect x="480" y="345" width="600" height="160" rx="10" class="box"/>
+  <text x="500" y="373" class="bt">Postgres database + auto API</text>
+  <text x="500" y="394" class="bs">Row-Level Security: each user reads only chats they belong to</text>
+  <g font-size="12" fill="#0a1931">
+    <rect x="500" y="410" width="88" height="26" rx="6" fill="#f3f6f9" stroke="#d5dce3"/><text x="544" y="428" text-anchor="middle">users</text>
+    <rect x="596" y="410" width="88" height="26" rx="6" fill="#f3f6f9" stroke="#d5dce3"/><text x="640" y="428" text-anchor="middle">chats</text>
+    <rect x="692" y="410" width="118" height="26" rx="6" fill="#f3f6f9" stroke="#d5dce3"/><text x="751" y="428" text-anchor="middle">chat_members</text>
+    <rect x="818" y="410" width="100" height="26" rx="6" fill="#f3f6f9" stroke="#d5dce3"/><text x="868" y="428" text-anchor="middle">messages</text>
+    <rect x="926" y="410" width="88" height="26" rx="6" fill="#f3f6f9" stroke="#d5dce3"/><text x="970" y="428" text-anchor="middle">statuses</text>
+    <rect x="500" y="444" width="88" height="26" rx="6" fill="#f3f6f9" stroke="#d5dce3"/><text x="544" y="462" text-anchor="middle">channels</text>
+    <rect x="596" y="444" width="140" height="26" rx="6" fill="#f3f6f9" stroke="#d5dce3"/><text x="666" y="462" text-anchor="middle">channel_followers</text>
+    <rect x="744" y="444" width="100" height="26" rx="6" fill="#fff" stroke="#a7b0bb" stroke-dasharray="5 4"/><text x="794" y="462" text-anchor="middle" fill="#8a94a3">payments</text>
+  </g>
+  <text x="500" y="492" class="bs">Messages: text · image · voice · poll · location (type + JSON body)</text>
+
+  <rect x="480" y="520" width="600" height="72" rx="10" class="box"/>
+  <text x="500" y="548" class="bt">Realtime</text>
+  <text x="500" y="569" class="bs">WebSocket: new messages, ✓✓ delivered/read, typing…, online status</text>
+
+  <rect x="480" y="607" width="600" height="72" rx="10" class="box"/>
+  <text x="500" y="635" class="bt">Storage</text>
+  <text x="500" y="656" class="bs">Photos, voice notes, avatars, status images · access checked per chat</text>
+
+  <rect x="480" y="694" width="600" height="160" rx="10" class="box"/>
+  <text x="500" y="722" class="bt">Edge Functions (the only server code)</text>
+  <rect x="500" y="735" width="560" height="44" rx="8" fill="#f3f6f9" stroke="#d5dce3"/>
+  <text x="515" y="755" class="bs" style="font-weight:700;fill:#0a1931">notify</text>
+  <text x="565" y="755" class="bs">database trigger: new message saved → push to offline members</text>
+  <text x="515" y="772" class="bs">holds the push keys (never shipped in the app)</text>
+  <rect x="500" y="790" width="560" height="50" rx="8" class="boxd"/>
+  <text x="515" y="811" class="bs" style="font-weight:700;fill:#8a94a3">payments (Phase 3)</text>
+  <text x="650" y="811" class="bs">start payment · verify provider webhook</text>
+  <text x="515" y="829" class="bs">receipt posted only after the provider confirms</text>
+
+
+  <!-- ===== Column 3: external ===== -->
+  <rect x="1210" y="205" width="360" height="665" rx="14" fill="#f6f4ee" stroke="#d8cfb6"/>
+  <text x="1230" y="233" class="ct">EXTERNAL SERVICES</text>
+
+  <rect x="1230" y="250" width="320" height="80" rx="10" class="box"/>
+  <text x="1250" y="278" class="bt">SMS gateway</text>
+  <text x="1250" y="299" class="bs">e.g. Hubtel (Ghana) or Twilio</text>
+  <text x="1250" y="317" class="bs">delivers the sign-in codes</text>
+
+  <rect x="1230" y="560" width="320" height="80" rx="10" class="box"/>
+  <text x="1250" y="588" class="bt">Google Fonts</text>
+  <text x="1250" y="609" class="bs">Sora · Plus Jakarta Sans, loaded by the app</text>
+  <text x="1250" y="627" class="bs">(could be self-hosted later)</text>
+
+  <rect x="1230" y="707" width="320" height="64" rx="10" class="box"/>
+  <text x="1250" y="733" class="bt">Push service</text>
+  <text x="1250" y="754" class="bs">Firebase Cloud Messaging / Web Push</text>
+
+  <rect x="1230" y="785" width="320" height="70" rx="10" class="boxd"/>
+  <text x="1250" y="810" class="bt" style="fill:#8a94a3">Payment provider (Phase 3)</text>
+  <text x="1250" y="830" class="bs">MTN MoMo API / Paystack / Flutterwave</text>
+  <text x="1250" y="847" class="bs">user approves on the provider's own prompt</text>
+
+  <!-- ===== Arrows: app <-> services ===== -->
+  <path d="M330 139 L466 139" class="line" marker-end="url(#ah)"/>
+  <text x="340" y="131" class="lbl">loads app · HTTPS</text>
+
+  <path d="M330 290 L476 290" class="line" marker-end="url(#ah)"/>
+  <text x="345" y="282" class="lbl">sign in · HTTPS</text>
+
+  <path d="M330 425 L476 425" class="line" marker-end="url(#ah)"/>
+  <text x="345" y="417" class="lbl">read / write · HTTPS</text>
+
+  <path d="M334 556 L476 556" class="line" marker-start="url(#ah)" marker-end="url(#ah)"/>
+  <text x="345" y="548" class="lbl">live updates · WSS</text>
+
+  <path d="M330 643 L476 643" class="line" marker-end="url(#ah)"/>
+  <text x="345" y="635" class="lbl">upload / download</text>
+
+  <path d="M330 812 L476 812" class="dline" marker-end="url(#ahd)"/>
+  <text x="345" y="804" class="lbld">pay (Phase 3)</text>
+
+  <!-- Auth -> SMS -->
+  <path d="M1080 290 L1226 290" class="line" marker-end="url(#ah)"/>
+  <text x="1105" y="282" class="lbl">send code</text>
+
+
+  <!-- notify -> push -->
+  <path d="M1060 752 L1226 752" class="line" marker-end="url(#ah)"/>
+  <text x="1112" y="744" class="lbl">send push</text>
+
+  <!-- payments fn <-> provider -->
+  <path d="M1060 815 L1226 815" class="dline" marker-start="url(#ahd)" marker-end="url(#ahd)"/>
+  <text x="1105" y="807" class="lbld">charge · webhook</text>
+
+  <!-- push -> device (long return path along bottom) -->
+  <path d="M1560 739 L1585 739 L1585 885 L190 885 L190 854" class="line" marker-end="url(#ah)"/>
+  <text x="700" y="879" class="lbl">push notification delivered to the phone</text>
+
+  <!-- ===== Delivery pipeline ===== -->
+  <rect x="30" y="905" width="1540" height="62" rx="12" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="50" y="931" class="ct">HOW CODE GETS LIVE</text>
+  <text x="50" y="953" class="bs">Developer edits app/  →  GitHub (branch → pull request → main)  →  GitHub Actions: lint · tests · npm run build  →  Vercel deploys  →  bbchat.benbaxco.com</text>
+
+  <!-- Legend -->
+  <g transform="translate(30 985)">
+    <path d="M0 10 L40 10" class="line" marker-end="url(#ah)"/><text x="50" y="14" class="bs">in the MVP</text>
+    <path d="M150 10 L190 10" class="dline" marker-end="url(#ahd)"/><text x="200" y="14" class="bs">after the MVP / optional</text>
+    <text x="420" y="14" class="bs">HTTPS = secure web request · WSS = secure live connection · JWT = sign-in token · OTP = one-time code</text>
+  </g>
+</svg>
