@@ -1,26 +1,22 @@
-# BBchat — Week 2 Proof of Work
+# BBchat — Proof of Work
 
-All three files below contain the same report (9 pages).
+Before/after proof for management. Each week's folder contains the same report three ways: **PDF** (send this), HTML (view in a browser) and Word (to edit), plus the individual screenshots.
 
-| File | Use it to |
+| Week | Items | Send this |
+|---|---|---|
+| [week2/](week2) | BB-01 to BB-06: typing, source code, naming, dark theme, false claims, fake payments | `week2/BBchat-Week2-Proof.pdf` (9 pages) |
+| [week3/](week3) | BB-07 to BB-14: saved chats, install/offline, page title and previews, fake dashboard, cleanup, one host, speed, docs | `week3/BBchat-Week3-Proof.pdf` (9 pages) |
+
+## Week 3 screenshots (`week3/screenshots/`)
+
+| File | Proves |
 |---|---|
-| **BBchat-Week2-Proof.pdf** | **Send to the CEO** (opens on any device) |
-| BBchat-Week2-Proof.html | Show in a browser (one file, screenshots built in) |
-| BBchat-Week2-Proof.docx | Edit the text in Word |
-| `screenshots/` | Send individual images |
-| `old/` | First report (superseded; do not send) |
+| 1-before-reload / 1-after-reload | BB-07: still signed in, message kept after a reload |
+| 2-before-offline / 2-after-offline | BB-08: app opens with no internet |
+| 3-bb08-install-check | BB-08: browser install check 0 errors, new icons |
+| 4-bb09-metadata | BB-09: title, description, link-preview card |
+| 5-before-dashboard / 5-after-dashboard | BB-10: fake numbers page removed (404) |
+| 6-bb11-12-14-repo-hosting | BB-11/12/14: files removed, Vercel only, docs |
+| 7-bb13-speed | BB-13: first screen 1.92 s → 0.83 s, 272 KB → 144 KB |
 
-## Status (BB-01 to BB-06)
-
-| ID | Issue | Status | Proof |
-|---|---|---|---|
-| BB-01 | Text fields lose focus after every keystroke | FIXED | 1-before/after-chat |
-| BB-02 | App source code was missing | FIXED | 5-bb02-source-recovered |
-| BB-03 | Branded as a "WhatsApp Clone" | FIXED | 4-bb03-name-change |
-| BB-04 | Dark theme switch did nothing | FIXED | 6-…-dark-settings, 7-…-dark-chat |
-| BB-05 | False "end-to-end encrypted" claim | FIXED | 1-before/after-chat |
-| BB-06 | Fake payments with no DEMO label | FIXED | 2-…-payment, 3-…-receipt |
-
-The report gives a one-line "risk if not fixed" for each item.
-
-The fixes are on git branch `review/bb-fixes`. They are **not deployed** to the live site yet.
+This folder is **not published**: Vercel serves only `app/dist`.
