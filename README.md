@@ -53,7 +53,7 @@ BBchat/
 └── BBchat-Review-and-Fix-Plan.docx
 ```
 
-The handover's stubs, duplicates, fake dashboard and extra hosting files were removed in BB-10 and BB-11. They remain in git history (commit `372e8d8`).
+The handover's stubs, duplicates, fake dashboard and extra hosting files were removed in BB-10 and BB-11. They remain in git history (commit `bd3e148`).
 
 ---
 
