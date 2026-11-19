@@ -1,4 +1,4 @@
-@import "https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap";
+/* Fonts are bundled from @fontsource-variable (imported in main.jsx, BB-13). */
 
 @tailwind base;
 @tailwind components;
@@ -64,11 +64,11 @@ body,
   color: var(--ink);
   min-height: 100%;
   margin: 0;
-  font-family: Plus Jakarta Sans, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans, Ubuntu,
+  font-family: "Plus Jakarta Sans Variable", Plus Jakarta Sans, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans, Ubuntu,
     Cantarell, Helvetica Neue, sans-serif;
 }
 .font-display {
-  font-family: Sora, Plus Jakarta Sans, sans-serif;
+  font-family: "Sora Variable", Sora, "Plus Jakarta Sans Variable", sans-serif;
 }
 .no-scrollbar::-webkit-scrollbar {
   display: none;

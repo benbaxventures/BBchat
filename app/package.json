@@ -1,16 +1,17 @@
 {
   "name": "bbchat",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "module",
   "description": "BBchat by BENBAX: chat app demo (React source rebuilt from the original compiled bundle)",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "release": "vite build && node scripts/release.mjs"
+    "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource-variable/plus-jakarta-sans": "5.3.0",
+    "@fontsource-variable/sora": "5.3.0",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
@@ -19,7 +20,6 @@
     "autoprefixer": "10.4.20",
     "postcss": "8.5.30",
     "tailwindcss": "3.4.17",
-    "vite": "6.4.6",
-    "vite-plugin-singlefile": "2.3.3"
+    "vite": "6.4.6"
   }
 }

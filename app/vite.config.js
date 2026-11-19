@@ -1,10 +1,9 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { viteSingleFile } from "vite-plugin-singlefile";
 
-// Builds ONE self-contained dist/index.html (JS, CSS and logos inlined),
-// the same shape as the original deployed file, so existing hosting keeps working.
+// BB-13: normal multi-file build. JS/CSS/images get content-hashed names (cacheable for a year),
+// files in public/ (manifest, service worker, icons, preview image) are copied as-is.
 export default defineConfig({
-  plugins: [react(), viteSingleFile()],
-  build: { outDir: "dist", assetsInlineLimit: 100_000_000 },
+  plugins: [react()],
+  build: { outDir: "dist" },
 });

@@ -3,9 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>React Artifact</title>
+
+    <!-- BB-09: page title, description and sharing previews -->
+    <title>BBchat by BENBAX — Chat · Call · Connect</title>
+    <meta name="description" content="BBchat is a chat app demo by BENBAX for Katamanso, Apolonia and Tema, Ghana. In this demo, messages stay on your device." />
+    <meta name="theme-color" content="#075E54" />
+    <link rel="canonical" href="https://bbchat.benbaxco.com/" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="BBchat by BENBAX" />
+    <meta property="og:title" content="BBchat by BENBAX" />
+    <meta property="og:description" content="Chat · Call · Connect · Ghana. A chat app demo by BENBAX for Katamanso, Apolonia and Tema." />
+    <meta property="og:url" content="https://bbchat.benbaxco.com/" />
+    <meta property="og:image" content="https://bbchat.benbaxco.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="BBchat by BENBAX logo with the words Chat, Call, Connect, Ghana" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- BB-08: install on phones -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="BBchat" />
+
+    <!-- BB-13: fonts (Sora, Plus Jakarta Sans) are bundled with the app (see src/main.jsx),
+         so there is no extra server to connect to and they also work offline. -->
   </head>
   <body>
+    <noscript>BBchat needs JavaScript to run.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

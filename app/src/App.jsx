@@ -1,6 +1,8 @@
 import React, { Fragment } from "react";
-import logoUrl from "./assets/benbax-logo.png";
+// BB-13: 288 px WebP (7 KB) instead of the 500 px PNG (148 KB); shown at most 96 px sharp.
+import logoUrl from "./assets/benbax-logo-288.webp";
 import logoSmallUrl from "./assets/benbax-logo-64.png";
+import { loadSaved, saveState, clearSaved } from "./storage.js";
 import {
   nowTime,
   SEED_CHATS,
@@ -111,7 +113,9 @@ function LogoSmall({ size = 24 }) {
   return <Logo size={size} />;
 }
 
-export default function App() {
+export default function App({ onReset }) {
+  // BB-07: what was saved on this device last time (null for a new visitor).
+  const [savedState] = React.useState(loadSaved);
   let [screen, setScreen] = React.useState("splash"),
     [country, setCountry] = React.useState(COUNTRIES[0]),
     [phone, setPhone] = React.useState(""),
@@ -120,15 +124,17 @@ export default function App() {
     [otpError, setOtpError] = React.useState(false),
     [resendSeconds, setResendSeconds] = React.useState(30),
     [canResend, setCanResend] = React.useState(false),
-    [profile, setProfile] = React.useState({
-      name: "",
-      about: "Available on BBchat",
-      color: "#075E54",
-    }),
+    [profile, setProfile] = React.useState(
+      savedState?.profile ?? {
+        name: "",
+        about: "Available on BBchat",
+        color: "#075E54",
+      },
+    ),
     [showQr, setShowQr] = React.useState(false),
     [tab, setTab] = React.useState("chats"),
-    [chats, setChats] = React.useState(SEED_CHATS),
-    [activeChatId, setActiveChatId] = React.useState(1),
+    [chats, setChats] = React.useState(savedState?.chats ?? SEED_CHATS),
+    [activeChatId, setActiveChatId] = React.useState(savedState?.activeChatId ?? 1),
     [search, setSearch] = React.useState(""),
     [filter, setFilter] = React.useState("All"),
     [draft, setDraft] = React.useState(""),
@@ -137,7 +143,7 @@ export default function App() {
     [showEmoji, setShowEmoji] = React.useState(false),
     [showAttach, setShowAttach] = React.useState(false),
     [showPlugins, setShowPlugins] = React.useState(false),
-    [plugins, setPlugins] = React.useState({
+    [plugins, setPlugins] = React.useState(savedState?.plugins ?? {
       Stickers: true,
       GIFs: true,
       Polls: true,
@@ -178,7 +184,7 @@ export default function App() {
     [scheduleDate, setScheduleDate] = React.useState("2026-06-20"),
     [scheduleTime, setScheduleTime] = React.useState("10:00"),
     [scheduleText, setScheduleText] = React.useState("BENBAX weekly update"),
-    [scheduled, setScheduled] = React.useState([
+    [scheduled, setScheduled] = React.useState(savedState?.scheduled ?? [
       {
         d: "2026-06-20",
         t: "09:00",
@@ -191,14 +197,14 @@ export default function App() {
     [translateLang, setTranslateLang] = React.useState("Twi"),
     // BB-04: start from the device's light/dark setting; the Settings toggle then overrides it.
     [darkMode, setDarkMode] = React.useState(
-      () => window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false,
+      () => savedState?.darkMode ?? window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false,
     ),
-    [wallpaper, setWallpaper] = React.useState("Classic"),
-    [notifications, setNotifications] = React.useState(true),
-    [chatLock, setChatLock] = React.useState(false),
-    [followedChannels, setFollowedChannels] = React.useState([1]),
+    [wallpaper, setWallpaper] = React.useState(savedState?.wallpaper ?? "Classic"),
+    [notifications, setNotifications] = React.useState(savedState?.notifications ?? true),
+    [chatLock, setChatLock] = React.useState(savedState?.chatLock ?? false),
+    [followedChannels, setFollowedChannels] = React.useState(savedState?.followedChannels ?? [1]),
     [myStatus, setMyStatus] = React.useState(
-      "Building BENBAX from Katamanso ✨",
+      savedState?.myStatus ?? "Building BENBAX from Katamanso ✨",
     ),
     [activeCall, setActiveCall] = React.useState(""),
     [menuOpen, setMenuOpen] = React.useState(false),
@@ -207,7 +213,8 @@ export default function App() {
     activeChat = chats.find((m) => m.id === activeChatId) || chats[0];
   React.useEffect(() => {
     if (screen === "splash") {
-      let m = setTimeout(() => setScreen("welcome"), 1900);
+      // BB-07: a returning signed-in user goes straight back to their chats.
+      let m = setTimeout(() => setScreen(savedState?.signedIn ? "app" : "welcome"), 1900);
       return () => clearTimeout(m);
     }
   }, [screen]),
@@ -237,6 +244,20 @@ export default function App() {
     root.classList.toggle("dark", darkMode);
     root.classList.toggle("light", !darkMode);
   }, [darkMode]);
+  // BB-07: while signed in, save chats and settings on this device after every change.
+  React.useEffect(() => {
+    if (screen !== "app") return;
+    saveState({
+      signedIn: true, profile, chats, activeChatId, plugins, scheduled,
+      darkMode, wallpaper, notifications, chatLock, followedChannels, myStatus,
+    });
+  }, [screen, profile, chats, activeChatId, plugins, scheduled, darkMode, wallpaper, notifications, chatLock, followedChannels, myStatus]);
+  // BB-07: log out = forget everything saved on this device and start fresh.
+  const logOut = () => {
+    clearSaved();
+    if (onReset) onReset();
+    else window.location.reload();
+  };
   let showToast = (m) => setToast(m),
     verifyOtp = () => {
       if (otp.join("") === "123456") setScreen("profile");
@@ -828,7 +849,7 @@ export default function App() {
                     {" Plugins"}
                   </button>
                   <button
-                    onClick={() => setScreen("welcome")}
+                    onClick={logOut}
                     className="flex items-center gap-1 font-bold"
                   >
                     <LogOutIcon size={14} />
@@ -893,7 +914,7 @@ export default function App() {
                         Settings
                       </button>
                       <button
-                        onClick={() => setScreen("welcome")}
+                        onClick={logOut}
                         className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-[var(--card)] text-red-500"
                       >
                         Log out
@@ -2303,7 +2324,7 @@ export default function App() {
           ))}
         </div>
         <button
-          onClick={() => setScreen("welcome")}
+          onClick={logOut}
           className="w-full mt-6 bg-red-50 text-red-600 font-bold py-3.5 rounded-2xl"
         >
           Log out
